@@ -65,8 +65,22 @@ def calcular_max_caixas_por_embalagem(largura, altura, profundidade):
     embalagem_altura = 50
     embalagem_profundidade = 60
     
-    # Dimensões da caixa a ser embalada
+    # Verificar se alguma dimensão da caixa é maior que a dimensão correspondente da embalagem
+    # (considerando todas as rotações possíveis)
     caixa_dims = [largura, altura, profundidade]
+    embalagem_dims = [embalagem_largura, embalagem_altura, embalagem_profundidade]
+    
+    # Verificar se a caixa cabe em alguma rotação
+    cabe_em_alguma_rotacao = False
+    for dims in permutations(caixa_dims):
+        l, a, p = dims
+        if l <= embalagem_largura and a <= embalagem_altura and p <= embalagem_profundidade:
+            cabe_em_alguma_rotacao = True
+            break
+    
+    # Se não cabe em nenhuma rotação, retorna 0
+    if not cabe_em_alguma_rotacao:
+        return 0
     
     max_caixas = 0
     
@@ -223,4 +237,109 @@ def calcular_planificacao_tampa_livro(largura, altura, profundidade):
         'dimensoes_planificacao': (largura_planificada, altura_planificada),
         'colunas_por_chapa': colunas_por_chapa,
         'linhas_por_chapa': linhas_por_chapa
+    }
+
+def calcular_planificacao_tampa_ima(largura, altura, profundidade):
+    """
+    Calcula a planificação para caixas com tampa-imã
+    Retorna: (area_base, area_tampa, area_ima, caixas_por_chapa)
+    """
+    # Converter dimensões da caixa para mm
+    largura_mm = largura * 10
+    altura_mm = altura * 10
+    profundidade_mm = profundidade * 10
+    
+    # Cálculo da base planificada
+    largura_base_planificada = largura_mm + 2 * profundidade_mm
+    altura_base_planificada = altura_mm + 2 * profundidade_mm
+    area_base_planificada = largura_base_planificada * altura_base_planificada
+    
+    # Cálculo da tampa com imã
+    # Profundidade da tampa é fixa em 25mm
+    profundidade_tampa_mm = 25
+    
+    # Largura e altura da face central da tampa (maior que a base em 3×espessura)
+    largura_tampa = largura_mm + 3 * ESPESSURA_PAPELAO_MM
+    altura_tampa = altura_mm + 3 * ESPESSURA_PAPELAO_MM
+    
+    # Planificação da tampa
+    largura_tampa_planificada = largura_tampa + 2 * profundidade_tampa_mm
+    altura_tampa_planificada = altura_tampa + 2 * profundidade_tampa_mm
+    area_tampa_planificada = largura_tampa_planificada * altura_tampa_planificada
+    
+    # Cálculo da área para imã (2cm de altura)
+    altura_ima_mm = 20  # 2cm
+    area_ima_planificada = largura_mm * altura_ima_mm
+    
+    # Calcular quantas caixas completas cabem em uma chapa
+    # Área disponível na chapa (descontando margens)
+    area_disponivel = (CHAPA_LARGURA_MM - MARGEM_MM) * (CHAPA_ALTURA_MM - MARGEM_MM)
+    
+    # Área necessária para uma caixa completa (base + tampa + imã)
+    area_caixa_completa = area_base_planificada + area_tampa_planificada + area_ima_planificada
+    
+    # Número de caixas que cabem em uma chapa
+    caixas_por_chapa = int(area_disponivel / area_caixa_completa)
+    
+    return {
+        'area_base_mm2': area_base_planificada,
+        'area_tampa_mm2': area_tampa_planificada,
+        'area_ima_mm2': area_ima_planificada,
+        'area_caixa_completa_mm2': area_caixa_completa,
+        'caixas_por_chapa': caixas_por_chapa,
+        'dimensoes_base': (largura_base_planificada, altura_base_planificada),
+        'dimensoes_tampa': (largura_tampa_planificada, altura_tampa_planificada),
+        'dimensoes_ima': (largura_mm, altura_ima_mm)
+    }
+
+def calcular_planificacao_tampa_luva(largura, altura, profundidade):
+    """
+    Calcula a planificação para caixas com tampa-luva
+    Retorna: (area_base, area_tampa, area_aba, caixas_por_chapa)
+    """
+    # Converter dimensões da caixa para mm
+    largura_mm = largura * 10
+    altura_mm = altura * 10
+    profundidade_mm = profundidade * 10
+    
+    # Cálculo da base planificada
+    largura_base_planificada = largura_mm + 2 * profundidade_mm
+    altura_base_planificada = altura_mm + 2 * profundidade_mm
+    area_base_planificada = largura_base_planificada * altura_base_planificada
+    
+    # Cálculo da tampa com luva
+    # Profundidade da tampa é fixa em 25mm
+    profundidade_tampa_mm = 25
+    
+    # Largura e altura da face central da tampa (maior que a base em 3×espessura)
+    largura_tampa = largura_mm + 3 * ESPESSURA_PAPELAO_MM
+    altura_tampa = altura_mm + 3 * ESPESSURA_PAPELAO_MM
+    
+    # Planificação da tampa
+    largura_tampa_planificada = largura_tampa + 2 * profundidade_tampa_mm
+    altura_tampa_planificada = altura_tampa + 2 * profundidade_tampa_mm
+    area_tampa_planificada = largura_tampa_planificada * altura_tampa_planificada
+    
+    # Cálculo da aba lateral (largura × profundidade)
+    area_aba_planificada = largura_mm * profundidade_mm
+    
+    # Calcular quantas caixas completas cabem em uma chapa
+    # Área disponível na chapa (descontando margens)
+    area_disponivel = (CHAPA_LARGURA_MM - MARGEM_MM) * (CHAPA_ALTURA_MM - MARGEM_MM)
+    
+    # Área necessária para uma caixa completa (base + tampa + aba)
+    area_caixa_completa = area_base_planificada + area_tampa_planificada + area_aba_planificada
+    
+    # Número de caixas que cabem em uma chapa
+    caixas_por_chapa = int(area_disponivel / area_caixa_completa)
+    
+    return {
+        'area_base_mm2': area_base_planificada,
+        'area_tampa_mm2': area_tampa_planificada,
+        'area_aba_mm2': area_aba_planificada,
+        'area_caixa_completa_mm2': area_caixa_completa,
+        'caixas_por_chapa': caixas_por_chapa,
+        'dimensoes_base': (largura_base_planificada, altura_base_planificada),
+        'dimensoes_tampa': (largura_tampa_planificada, altura_tampa_planificada),
+        'dimensoes_aba': (largura_mm, profundidade_mm)
     } 

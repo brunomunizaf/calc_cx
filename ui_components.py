@@ -84,7 +84,12 @@ def display_planification_section(estrutura, tipo_tampa, largura, altura, profun
     if estrutura == "Papelão":
         if tipo_tampa == "Tampa Solta":
             planificacao = calcular_planificacao_tampa_solta(largura, altura, profundidade)
-            chapas_necessarias = math.ceil(quantidade_caixas / planificacao['caixas_por_chapa'])
+            
+            # Verificar se caixas_por_chapa é maior que zero para evitar divisão por zero
+            if planificacao['caixas_por_chapa'] > 0:
+                chapas_necessarias = math.ceil(quantidade_caixas / planificacao['caixas_por_chapa'])
+            else:
+                chapas_necessarias = quantidade_caixas  # Uma chapa por caixa se não couber nenhuma
             
             st.markdown("### 📐 Planificação de Chapas de Papelão (Tampa Solta)")
             st.markdown(f"**Dimensões da chapa:** 1040mm × 860mm")
@@ -97,7 +102,12 @@ def display_planification_section(estrutura, tipo_tampa, largura, altura, profun
         
         elif tipo_tampa == "Tampa Livro":
             planificacao_livro = calcular_planificacao_tampa_livro(largura, altura, profundidade)
-            chapas_necessarias_livro = math.ceil(quantidade_caixas / planificacao_livro['caixas_por_chapa'])
+            
+            # Verificar se caixas_por_chapa é maior que zero para evitar divisão por zero
+            if planificacao_livro['caixas_por_chapa'] > 0:
+                chapas_necessarias_livro = math.ceil(quantidade_caixas / planificacao_livro['caixas_por_chapa'])
+            else:
+                chapas_necessarias_livro = quantidade_caixas  # Uma chapa por caixa se não couber nenhuma
             
             st.markdown("### 📐 Planificação de Chapas de Papelão (Tampa-Livro)")
             st.markdown(f"**Dimensões da chapa:** 1040mm × 860mm")
@@ -108,133 +118,417 @@ def display_planification_section(estrutura, tipo_tampa, largura, altura, profun
             st.markdown(f"**Linhas por chapa:** {planificacao_livro['linhas_por_chapa']}")
             st.markdown(f"**Caixas por chapa:** {planificacao_livro['caixas_por_chapa']}")
             st.markdown(f"**Chapas necessárias:** {chapas_necessarias_livro}")
+        
+        elif tipo_tampa == "Tampa Imã":
+            planificacao_ima = calcular_planificacao_tampa_ima(largura, altura, profundidade)
+            
+            # Verificar se caixas_por_chapa é maior que zero para evitar divisão por zero
+            if planificacao_ima['caixas_por_chapa'] > 0:
+                chapas_necessarias_ima = math.ceil(quantidade_caixas / planificacao_ima['caixas_por_chapa'])
+            else:
+                chapas_necessarias_ima = quantidade_caixas  # Uma chapa por caixa se não couber nenhuma
+            
+            st.markdown("### 📐 Planificação de Chapas de Papelão (Tampa-Imã)")
+            st.markdown(f"**Dimensões da chapa:** 1040mm × 860mm")
+            st.markdown(f"**Base planificada:** {planificacao_ima['dimensoes_base'][0]:.0f}mm × {planificacao_ima['dimensoes_base'][1]:.0f}mm")
+            st.markdown(f"**Tampa planificada:** {planificacao_ima['dimensoes_tampa'][0]:.0f}mm × {planificacao_ima['dimensoes_tampa'][1]:.0f}mm")
+            st.markdown(f"**Área para imã:** {planificacao_ima['dimensoes_ima'][0]:.0f}mm × {planificacao_ima['dimensoes_ima'][1]:.0f}mm")
+            st.markdown(f"**Área da base:** {planificacao_ima['area_base_mm2']/100:.1f} cm²")
+            st.markdown(f"**Área da tampa:** {planificacao_ima['area_tampa_mm2']/100:.1f} cm²")
+            st.markdown(f"**Área do imã:** {planificacao_ima['area_ima_mm2']/100:.1f} cm²")
+            st.markdown(f"**Caixas por chapa:** {planificacao_ima['caixas_por_chapa']}")
+            st.markdown(f"**Chapas necessárias:** {chapas_necessarias_ima}")
+        
+        elif tipo_tampa == "Tampa Luva":
+            planificacao_luva = calcular_planificacao_tampa_luva(largura, altura, profundidade)
+            
+            # Verificar se caixas_por_chapa é maior que zero para evitar divisão por zero
+            if planificacao_luva['caixas_por_chapa'] > 0:
+                chapas_necessarias_luva = math.ceil(quantidade_caixas / planificacao_luva['caixas_por_chapa'])
+            else:
+                chapas_necessarias_luva = quantidade_caixas  # Uma chapa por caixa se não couber nenhuma
+            
+            st.markdown("### 📐 Planificação de Chapas de Papelão (Tampa-Luva)")
+            st.markdown(f"**Dimensões da chapa:** 1040mm × 860mm")
+            st.markdown(f"**Base planificada:** {planificacao_luva['dimensoes_base'][0]:.0f}mm × {planificacao_luva['dimensoes_base'][1]:.0f}mm")
+            st.markdown(f"**Tampa planificada:** {planificacao_luva['dimensoes_tampa'][0]:.0f}mm × {planificacao_luva['dimensoes_tampa'][1]:.0f}mm")
+            st.markdown(f"**Aba lateral:** {planificacao_luva['dimensoes_aba'][0]:.0f}mm × {planificacao_luva['dimensoes_aba'][1]:.0f}mm")
+            st.markdown(f"**Área da base:** {planificacao_luva['area_base_mm2']/100:.1f} cm²")
+            st.markdown(f"**Área da tampa:** {planificacao_luva['area_tampa_mm2']/100:.1f} cm²")
+            st.markdown(f"**Área da aba:** {planificacao_luva['area_aba_mm2']/100:.1f} cm²")
+            st.markdown(f"**Caixas por chapa:** {planificacao_luva['caixas_por_chapa']}")
+            st.markdown(f"**Chapas necessárias:** {chapas_necessarias_luva}")
 
 def display_cost_breakdown(estrutura, tipo_tampa, largura, altura, profundidade, quantidade_caixas,
                          usar_serigrafia, num_cores_serigrafia, num_impressoes_serigrafia,
                          usar_impressao_digital, tipo_impressao, tipo_revestimento,
                          tem_berco, tem_nicho, metros_fita, num_rebites,
                          usar_cola_quente, usar_cola_isopor, custos_fixos):
-    """Exibe o detalhamento completo dos custos"""
-    st.markdown("### 📋 Descrição Completa dos Custos")
+    """Exibe o detalhamento completo dos custos como uma conta de restaurante"""
     
-    st.markdown("**💰 CUSTOS FIXOS:**")
-    st.markdown("- **Custo fixo unitário:** Calculado dividindo o total dos custos fixos mensais pela produção média mensal (1000 caixas/mês)")
-    st.markdown("- **Inclui:** Aluguel, energia, água, vale-refeição, vale-transporte, combustível, INSS, FGTS, DAS, contabilidade, marketing, jurídico, Adobe, Meli+, Kommo, internet, financeiro, folha de pagamento")
+    # Calcular todos os custos
+    custo_fixo_unitario = custos_fixos['total_custos_fixos'] / CAIXAS_POR_MES
     
-    st.markdown("**🏗️ CUSTOS DE ESTRUTURA:**")
-    if estrutura == "Papelão":
-        st.markdown("- **Papelão:** Calculado pela área total da caixa (base + laterais + tampa) × R$ 8,31/m²")
-        st.markdown("- **Área calculada:** Baseada nas dimensões e tipo de tampa (solta, livro, luva, imã)")
-    elif estrutura == "Acrílico":
-        st.markdown("- **Acrílico:** Calculado pela área principal × R$ 95,50/m²")
-        st.markdown("- **Sem revestimentos:** Acrílico não permite revestimentos")
-    
-    st.markdown("**🎨 CUSTOS GRÁFICOS:**")
-    if usar_serigrafia:
-        st.markdown("- **Serigrafia:** R$ 1,01 por cor por impressão")
-        st.markdown(f"- **Aplicado:** {num_cores_serigrafia} cores × {num_impressoes_serigrafia} impressões")
-    else:
-        st.markdown("- **Serigrafia:** R$ 1,01 por cor por impressão ❌ **Não aplicado**")
-    
-    if usar_impressao_digital:
-        st.markdown(f"- **Impressão digital {tipo_impressao}:** R$ {CUSTO_IMPRESSAO_A4 if tipo_impressao == 'A4' else CUSTO_IMPRESSAO_A3:.2f} por unidade")
-    else:
-        st.markdown("- **Impressão digital A4:** R$ 3,50 por unidade ❌ **Não aplicado**")
-        st.markdown("- **Impressão digital A3:** R$ 5,00 por unidade ❌ **Não aplicado**")
-    
-    st.markdown("**🎨 CUSTOS DE REVESTIMENTO:**")
-    if estrutura == "Papelão":
-        if tipo_revestimento == "Vinil UV":
-            st.markdown("- **Vinil UV:** R$ 140,00/m² aplicado na área total da caixa")
-            st.markdown("- **Papel:** R$ 15,00/m² ❌ **Não aplicado**")
-        elif tipo_revestimento == "Papel":
-            st.markdown("- **Vinil UV:** R$ 140,00/m² ❌ **Não aplicado**")
-            st.markdown("- **Papel:** R$ 15,00/m² aplicado na área total da caixa")
-        else:
-            st.markdown("- **Vinil UV:** R$ 140,00/m² ❌ **Não aplicado**")
-            st.markdown("- **Papel:** R$ 15,00/m² ❌ **Não aplicado**")
-    else:
-        st.markdown("- **Vinil UV:** R$ 140,00/m² ❌ **Não aplicado (apenas para papelão)**")
-        st.markdown("- **Papel:** R$ 15,00/m² ❌ **Não aplicado (apenas para papelão)**")
-    
-    st.markdown("**🔧 CUSTOS DE COLA:**")
+    # Custos de estrutura
     if estrutura == "Papelão":
         area_papelao = calcular_area_papelao(largura, altura, profundidade, tipo_tampa)
-        ml_cola_total = area_papelao * 0.01  # 1ml por 100cm²
-        st.markdown(f"- **Cola PVA:** R$ 0,469/ml × {ml_cola_total:.1f} ml (automática)")
-        st.markdown(f"- **Cola adesiva:** R$ 0,058/ml × {ml_cola_total:.1f} ml (automática)")
-        if usar_cola_quente:
-            st.markdown(f"- **Cola quente:** R$ 0,0125/ml × {ml_cola_total:.1f} ml (opcional)")
-        else:
-            st.markdown("- **Cola quente:** R$ 0,0125/ml ❌ **Não aplicado**")
-        if usar_cola_isopor:
-            st.markdown(f"- **Cola de isopor:** R$ 0,015/ml × {ml_cola_total:.1f} ml (opcional)")
-        else:
-            st.markdown("- **Cola de isopor:** R$ 0,015/ml ❌ **Não aplicado**")
-        st.markdown("- **Cola de acrílico:** R$ 0,085/ml ❌ **Não aplicado (apenas para acrílico)**")
-        st.markdown(f"- **Quantidade calculada:** {ml_cola_total:.1f} ml (proporcional à área)")
-    elif estrutura == "Acrílico":
+        area_papelao_m2 = area_papelao / 10000
+        custo_papelao = area_papelao_m2 * PRECO_PAPELAO_POR_M2
+        custo_acrilico = 0
+    else:
         area_acrilico = (largura * altura) + (2 * largura * profundidade) + (2 * altura * profundidade)
-        ml_cola_total = area_acrilico * 0.01
-        st.markdown("- **Cola PVA:** R$ 0,469/ml ❌ **Não aplicado (apenas para papelão)**")
-        st.markdown("- **Cola adesiva:** R$ 0,058/ml ❌ **Não aplicado (apenas para papelão)**")
-        st.markdown("- **Cola quente:** R$ 0,0125/ml ❌ **Não aplicado (apenas para papelão)**")
-        st.markdown("- **Cola de isopor:** R$ 0,015/ml ❌ **Não aplicado (apenas para papelão)**")
-        st.markdown(f"- **Cola de acrílico:** R$ 0,085/ml × {ml_cola_total:.1f} ml (automática)")
-        st.markdown(f"- **Quantidade calculada:** {ml_cola_total:.1f} ml (proporcional à área)")
+        area_acrilico_m2 = area_acrilico / 10000
+        custo_acrilico = area_acrilico_m2 * PRECO_ACRILICO_POR_M2
+        custo_papelao = 0
     
-    st.markdown("**📦 CUSTOS DE EMBALAGEM:**")
+    # Custos gráficos
+    custo_serigrafia = CUSTO_SERIGRAFIA_POR_COR * num_cores_serigrafia * num_impressoes_serigrafia if usar_serigrafia else 0
+    custo_impressao = CUSTO_IMPRESSAO_A4 if (usar_impressao_digital and tipo_impressao == "A4") else (CUSTO_IMPRESSAO_A3 if (usar_impressao_digital and tipo_impressao == "A3") else 0)
+    
+    # Custos de revestimento
+    if estrutura == "Papelão":
+        area_revestimento = (largura * altura) + (2 * largura * profundidade) + (2 * altura * profundidade)
+        area_revestimento_m2 = area_revestimento / 10000
+        if tipo_revestimento == "Vinil UV":
+            custo_revestimento = area_revestimento_m2 * CUSTO_VINIL_UV_POR_M2
+        elif tipo_revestimento == "Papel":
+            custo_revestimento = area_revestimento_m2 * CUSTO_PAPEL_POR_M2
+        else:
+            custo_revestimento = 0
+    else:
+        custo_revestimento = 0
+    
+    # Custos de cola
+    if estrutura == "Papelão":
+        area_total_caixa = area_papelao
+        ml_cola_total = area_total_caixa * 0.01
+        custo_cola_pva = CUSTO_COLA_PVA * ml_cola_total
+        custo_cola_adesiva = CUSTO_COLA_ADESIVA * ml_cola_total
+        custo_cola_quente = CUSTO_COLA_QUENTE * ml_cola_total if usar_cola_quente else 0
+        custo_cola_isopor = CUSTO_COLA_ISOPOR * ml_cola_total if usar_cola_isopor else 0
+        custo_cola_acrilico = 0
+    else:
+        area_acrilico_cola = (largura * altura) + (2 * largura * profundidade) + (2 * altura * profundidade)
+        ml_cola_total = area_acrilico_cola * 0.01
+        custo_cola_pva = 0
+        custo_cola_adesiva = 0
+        custo_cola_quente = 0
+        custo_cola_isopor = 0
+        custo_cola_acrilico = CUSTO_COLA_ACRILICO * ml_cola_total
+    
+    # Custos adicionais
+    custo_fita = metros_fita * PRECO_FITA_POR_M
+    custo_rebites = num_rebites * PRECO_REBITE_UNITARIO
+    custo_ima_chapa = calcular_custo_ima_chapa_automatico(tipo_tampa, largura)
+    
+    # Custo das caixas de papelão
     num_caixas_por_embalagem = calcular_max_caixas_por_embalagem(largura, altura, profundidade)
+    
     if num_caixas_por_embalagem > 0:
         num_caixas_papelao_necessarias = math.ceil(quantidade_caixas / num_caixas_por_embalagem)
-        st.markdown(f"- **Caixas de papelão ondulado:** {num_caixas_papelao_necessarias} caixas de 50×50×60 cm")
-        st.markdown(f"- **Custo por caixa de papelão:** R$ {PRECO_CAIXA_PAPELAO:.2f}")
-        st.markdown(f"- **Caixas por embalagem:** {num_caixas_por_embalagem} (calculado com rotação)")
+        custo_caixa_papelao = (num_caixas_papelao_necessarias * PRECO_CAIXA_PAPELAO) / quantidade_caixas
     else:
-        st.markdown("- **Caixas de papelão ondulado:** 1 caixa por unidade (caixa muito grande)")
+        # Caixa não cabe na embalagem - não usar embalagem
+        custo_caixa_papelao = 0
     
-    st.markdown("**🔧 CUSTOS ADICIONAIS:**")
-    if metros_fita > 0:
-        st.markdown(f"- **Fita:** R$ 0,627/m × {metros_fita:.1f} m")
+    # Custos adicionais de serigrafia
+    custo_retardador = CUSTO_RETARDADOR_VINILICO if usar_serigrafia else 0
+    custo_emulsao = CUSTO_EMULSAO_SENSIBILIZANTE if usar_serigrafia else 0
+    custo_cola_permanente = CUSTO_COLA_PERMANENTE if usar_serigrafia else 0
+    
+    # Calcular total de custos variáveis
+    total_custos_variaveis = (
+        custo_papelao + custo_acrilico + custo_serigrafia + custo_impressao + 
+        custo_revestimento + custo_cola_pva + custo_cola_adesiva + custo_cola_quente + custo_cola_isopor + 
+        custo_cola_acrilico + custo_fita + custo_rebites + custo_ima_chapa + custo_caixa_papelao + 
+        custo_retardador + custo_emulsao + custo_cola_permanente
+    )
+    
+    # Aplicar multiplicador de complexidade
+    total_custos_variaveis_complexidade = aplicar_multiplicador_complexidade(
+        total_custos_variaveis, tem_berco, tem_nicho
+    )
+    
+    # Custo final
+    custo_final = custo_fixo_unitario + total_custos_variaveis_complexidade
+    
+    # Exibir como conta de restaurante
+    st.markdown("### 🧾 CONTA DETALHADA")
+    st.markdown("---")
+    
+    # Cabeçalho
+    col1, col2, col3 = st.columns([2, 1, 1])
+    with col1:
+        st.markdown("**ITEM**")
+    with col2:
+        st.markdown("**QTD**")
+    with col3:
+        st.markdown("**VALOR**")
+    
+    st.markdown("---")
+    
+    # Custos fixos
+    st.markdown("**💰 CUSTOS FIXOS**")
+    col1, col2, col3 = st.columns([2, 1, 1])
+    with col1:
+        st.markdown("Custo fixo unitário")
+    with col2:
+        st.markdown("1 un")
+    with col3:
+        st.markdown(f"R$ {custo_fixo_unitario:.2f}")
+    
+    # Custos de estrutura
+    st.markdown("**💛 MATERIA-PRIMA**")
+    if estrutura == "Papelão":
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown(f"Papelão ({area_papelao_m2:.3f} m²)")
+        with col2:
+            st.markdown("1 un")
+        with col3:
+            st.markdown(f"R$ {custo_papelao:.2f}")
     else:
-        st.markdown("- **Fita:** R$ 0,627/m ❌ **Não aplicado**")
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown(f"Acrílico ({area_acrilico_m2:.3f} m²)")
+        with col2:
+            st.markdown("1 un")
+        with col3:
+            st.markdown(f"R$ {custo_acrilico:.2f}")
     
-    if num_rebites > 0:
-        st.markdown(f"- **Rebites:** R$ 0,10/un × {num_rebites} unidades")
+    # Custos gráficos
+    st.markdown("**🎨 CUSTOS GRÁFICOS**")
+    if usar_serigrafia:
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown(f"Serigrafia ({num_cores_serigrafia} cores × {num_impressoes_serigrafia} impressões)")
+        with col2:
+            st.markdown("1 un")
+        with col3:
+            st.markdown(f"R$ {custo_serigrafia:.2f}")
+    
+    if usar_impressao_digital:
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown(f"Impressão digital {tipo_impressao}")
+        with col2:
+            st.markdown("1 un")
+        with col3:
+            st.markdown(f"R$ {custo_impressao:.2f}")
+    
+    # Custos de revestimento
+    if custo_revestimento > 0:
+        st.markdown("**🎨 CUSTOS DE REVESTIMENTO**")
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown(f"{tipo_revestimento} ({area_revestimento_m2:.3f} m²)")
+        with col2:
+            st.markdown("1 un")
+        with col3:
+            st.markdown(f"R$ {custo_revestimento:.2f}")
+    
+    # Custos de cola
+    st.markdown("**🔧 CUSTOS DE COLA**")
+    if custo_cola_pva > 0:
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown(f"Cola PVA ({ml_cola_total:.1f} ml)")
+        with col2:
+            st.markdown("1 un")
+        with col3:
+            st.markdown(f"R$ {custo_cola_pva:.2f}")
+    
+    if custo_cola_adesiva > 0:
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown(f"Cola adesiva ({ml_cola_total:.1f} ml)")
+        with col2:
+            st.markdown("1 un")
+        with col3:
+            st.markdown(f"R$ {custo_cola_adesiva:.2f}")
+    
+    if custo_cola_quente > 0:
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown(f"Cola quente ({ml_cola_total:.1f} ml)")
+        with col2:
+            st.markdown("1 un")
+        with col3:
+            st.markdown(f"R$ {custo_cola_quente:.2f}")
+    
+    if custo_cola_isopor > 0:
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown(f"Cola de isopor ({ml_cola_total:.1f} ml)")
+        with col2:
+            st.markdown("1 un")
+        with col3:
+            st.markdown(f"R$ {custo_cola_isopor:.2f}")
+    
+    if custo_cola_acrilico > 0:
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown(f"Cola de acrílico ({ml_cola_total:.1f} ml)")
+        with col2:
+            st.markdown("1 un")
+        with col3:
+            st.markdown(f"R$ {custo_cola_acrilico:.2f}")
+    
+    # Custos de embalagem
+    st.markdown("**📦 CUSTOS DE EMBALAGEM**")
+    
+    if num_caixas_por_embalagem > 0:
+        # Calcular número de embalagens necessárias
+        num_embalagens_necessarias = math.ceil(quantidade_caixas / num_caixas_por_embalagem)
+        custo_total_embalagem = num_embalagens_necessarias * PRECO_CAIXA_PAPELAO
+        
+        # Explicação do custo de embalagem
+        st.info(f"💡 **Como funciona:** Cada caixa de embalagem (R$ 31,00) acomoda até {num_caixas_por_embalagem} caixas. Para {quantidade_caixas} caixas, precisamos de {num_embalagens_necessarias} embalagem(s).")
+        
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown(f"Caixa papelão ondulado ({num_caixas_por_embalagem} caixas/embalagem)")
+        with col2:
+            st.markdown(f"{num_embalagens_necessarias} un")
+        with col3:
+            st.markdown(f"R$ {custo_total_embalagem:.2f}")
+        
+        # Mostrar custo por caixa
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown("Custo de embalagem por caixa")
+        with col2:
+            st.markdown("1 un")
+        with col3:
+            st.markdown(f"R$ {custo_caixa_papelao:.2f}")
     else:
-        st.markdown("- **Rebites:** R$ 0,10/un ❌ **Não aplicado**")
+        # Caixa não cabe na embalagem - não usar embalagem
+        st.info(f"💡 **Caixa não cabe na embalagem:** Dimensões da caixa ({largura}×{altura}×{profundidade} cm) são maiores que as dimensões da embalagem (50×50×60 cm). Não será usada embalagem.")
+        
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown("Caixa papelão ondulado (não aplicável)")
+        with col2:
+            st.markdown("0 un")
+        with col3:
+            st.markdown("R$ 0,00")
+        
+        # Mostrar custo por caixa
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown("Custo de embalagem por caixa")
+        with col2:
+            st.markdown("1 un")
+        with col3:
+            st.markdown("R$ 0,00")
     
-    custo_ima_chapa = calcular_custo_ima_chapa_automatico(tipo_tampa, largura)
+    # Custos adicionais
+    st.markdown("**🔧 CUSTOS ADICIONAIS**")
+    if custo_fita > 0:
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown(f"Fita ({metros_fita:.1f} m)")
+        with col2:
+            st.markdown("1 un")
+        with col3:
+            st.markdown(f"R$ {custo_fita:.2f}")
+    
+    if custo_rebites > 0:
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown(f"Rebites ({num_rebites} un)")
+        with col2:
+            st.markdown("1 un")
+        with col3:
+            st.markdown(f"R$ {custo_rebites:.2f}")
+    
     if custo_ima_chapa > 0:
         num_pares_ima = int(custo_ima_chapa / PRECO_IMA_CHAPA_PAR)
-        st.markdown(f"- **Imã + chapa:** R$ 1,58/par × {num_pares_ima} pares (automático baseado no tipo de tampa)")
-    else:
-        st.markdown("- **Imã + chapa:** R$ 1,58/par ❌ **Não aplicado (apenas para tampa imã)**")
+        col1, col2, col3 = st.columns([2, 1, 1])
+        with col1:
+            st.markdown(f"Imã + chapa ({num_pares_ima} pares)")
+        with col2:
+            st.markdown("1 un")
+        with col3:
+            st.markdown(f"R$ {custo_ima_chapa:.2f}")
     
-    st.markdown("**🎨 CUSTOS ADICIONAIS DE SERIGRAFIA:**")
+    # Custos adicionais de serigrafia
     if usar_serigrafia:
-        st.markdown("- **Retardador vinílico:** R$ 0,041 (por unidade)")
-        st.markdown("- **Emulsão + sensibilizante:** R$ 0,058 (por unidade)")
-        st.markdown("- **Cola permanente:** R$ 0,028 (por unidade)")
-    else:
-        st.markdown("- **Retardador vinílico:** R$ 0,041 ❌ **Não aplicado (apenas com serigrafia)**")
-        st.markdown("- **Emulsão + sensibilizante:** R$ 0,058 ❌ **Não aplicado (apenas com serigrafia)**")
-        st.markdown("- **Cola permanente:** R$ 0,028 ❌ **Não aplicado (apenas com serigrafia)**")
+        st.markdown("**🎨 CUSTOS ADICIONAIS DE SERIGRAFIA**")
+        if custo_retardador > 0:
+            col1, col2, col3 = st.columns([2, 1, 1])
+            with col1:
+                st.markdown("Retardador vinílico")
+            with col2:
+                st.markdown("1 un")
+            with col3:
+                st.markdown(f"R$ {custo_retardador:.2f}")
+        
+        if custo_emulsao > 0:
+            col1, col2, col3 = st.columns([2, 1, 1])
+            with col1:
+                st.markdown("Emulsão + sensibilizante")
+            with col2:
+                st.markdown("1 un")
+            with col3:
+                st.markdown(f"R$ {custo_emulsao:.2f}")
+        
+        if custo_cola_permanente > 0:
+            col1, col2, col3 = st.columns([2, 1, 1])
+            with col1:
+                st.markdown("Cola permanente")
+            with col2:
+                st.markdown("1 un")
+            with col3:
+                st.markdown(f"R$ {custo_cola_permanente:.2f}")
     
-    st.markdown("**⚡ MULTIPLICADORES DE COMPLEXIDADE:**")
-    if tem_berco and tem_nicho:
-        st.markdown("- **Berço + Nicho:** +80% no total de custos variáveis")
-    elif tem_berco:
-        st.markdown("- **Berço:** +30% no total de custos variáveis")
-        st.markdown("- **Nicho:** +50% ❌ **Não aplicado**")
-    elif tem_nicho:
-        st.markdown("- **Berço:** +30% ❌ **Não aplicado**")
-        st.markdown("- **Nicho:** +50% no total de custos variáveis")
-    else:
-        st.markdown("- **Berço:** +30% ❌ **Não aplicado**")
-        st.markdown("- **Nicho:** +50% ❌ **Não aplicado**")
+    # Multiplicadores de complexidade
+    if tem_berco or tem_nicho:
+        st.markdown("**⚡ MULTIPLICADORES DE COMPLEXIDADE**")
+        if tem_berco and tem_nicho:
+            col1, col2, col3 = st.columns([2, 1, 1])
+            with col1:
+                st.markdown("Berço + Nicho (+80%)")
+            with col2:
+                st.markdown("1 un")
+            with col3:
+                st.markdown(f"R$ {total_custos_variaveis_complexidade - total_custos_variaveis:.2f}")
+        elif tem_berco:
+            col1, col2, col3 = st.columns([2, 1, 1])
+            with col1:
+                st.markdown("Berço (+30%)")
+            with col2:
+                st.markdown("1 un")
+            with col3:
+                st.markdown(f"R$ {total_custos_variaveis_complexidade - total_custos_variaveis:.2f}")
+        elif tem_nicho:
+            col1, col2, col3 = st.columns([2, 1, 1])
+            with col1:
+                st.markdown("Nicho (+50%)")
+            with col2:
+                st.markdown("1 un")
+            with col3:
+                st.markdown(f"R$ {total_custos_variaveis_complexidade - total_custos_variaveis:.2f}")
     
-    st.markdown("**📊 CÁLCULO FINAL:**")
-    custo_fixo_unitario = custos_fixos['total_custos_fixos'] / CAIXAS_POR_MES
-    st.markdown(f"- **Custo fixo unitário:** R$ {custo_fixo_unitario:.2f}")
-    # Aqui você pode adicionar mais cálculos conforme necessário 
+    # Total
+    st.markdown("---")
+    col1, col2, col3 = st.columns([2, 1, 1])
+    with col1:
+        st.markdown("**TOTAL UNITÁRIO**")
+    with col2:
+        st.markdown("")
+    with col3:
+        st.markdown(f"**R$ {custo_final:.2f}**")
+    
+    # Total do projeto
+    custo_total_projeto = custo_final * quantidade_caixas
+    st.markdown("---")
+    col1, col2, col3 = st.columns([2, 1, 1])
+    with col1:
+        st.markdown("**TOTAL DO PROJETO**")
+    with col2:
+        st.markdown(f"({quantidade_caixas} un)")
+    with col3:
+        st.markdown(f"**R$ {custo_total_projeto:.2f}**")
+    
+    return custo_final, custo_total_projeto 

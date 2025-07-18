@@ -190,7 +190,7 @@ with st.expander("💰 Detalhamento de Custos", expanded=False):
 
     # Exibir seções de planificação e custos
     display_planification_section(estrutura, tipo_tampa, largura, altura, profundidade, quantidade_caixas)
-    display_cost_breakdown(estrutura, tipo_tampa, largura, altura, profundidade, quantidade_caixas,
+    custo_final_detalhado, custo_total_projeto_detalhado = display_cost_breakdown(estrutura, tipo_tampa, largura, altura, profundidade, quantidade_caixas,
                           usar_serigrafia, num_cores_serigrafia, num_impressoes_serigrafia,
                           usar_impressao_digital, tipo_impressao, tipo_revestimento,
                           tem_berco, tem_nicho, metros_fita, num_rebites,
@@ -198,5 +198,5 @@ with st.expander("💰 Detalhamento de Custos", expanded=False):
 
 # Custo Total de Produção
 st.markdown("### 🎯 Custo Total de Produção")
-st.markdown(f"**Custo unitário:** R$ {custo_final:.2f}")
-st.markdown(f"**Custo total do projeto:** R$ {custo_total_projeto:.2f}")
+st.markdown(f"**Custo unitário:** R$ {custo_final_detalhado:.2f}")
+st.markdown(f"**Custo total do projeto:** R$ {custo_total_projeto_detalhado:.2f}")

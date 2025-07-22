@@ -24,7 +24,7 @@ CUSTO_COLA_ACRILICO = 0.085  # R$ 0,085/ml
 PRECO_FITA_POR_M = 0.627  # R$ 0,627/m
 PRECO_REBITE_UNITARIO = 0.10  # R$ 0,10/un
 PRECO_IMA_CHAPA_PAR = 1.58  # R$ 1,58/par
-PRECO_CAIXA_PAPELAO = 31.0  # Caixa de papelão ondulado 50x50x60
+PRECO_CAIXA_PAPELAO = 12.0  # Caixa de papelão ondulado 50x35x35
 
 # Custos adicionais (só aplicados se há serigrafia)
 CUSTO_RETARDADOR_VINILICO = 0.041  # R$ 0,041 por unidade

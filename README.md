@@ -72,7 +72,7 @@ streamlit run app.py
 - **Impressão Digital** - A4 (R$ 3,50) ou A3 (R$ 5,00)
 
 ### 📦 Embalagem
-- **Caixas de papelão ondulado** - 50×50×60cm (R$ 31,00)
+- **Caixas de papelão ondulado** - 50×35×35cm (R$ 12,00)
 - **Algoritmo 3D** - Calcula máximo de caixas por embalagem com rotação
 
 ## 🔧 Configurações

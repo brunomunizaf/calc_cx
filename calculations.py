@@ -59,11 +59,11 @@ def calcular_custo_ima_chapa_automatico(tipo_tampa, largura):
     return 0
 
 def calcular_max_caixas_por_embalagem(largura, altura, profundidade):
-    """Calcula o número máximo de caixas que cabem na embalagem 50x50x60"""
+    """Calcula o número máximo de caixas que cabem na embalagem 50x35x35"""
     # Dimensões da caixa de papelão ondulado
     embalagem_largura = 50
-    embalagem_altura = 50
-    embalagem_profundidade = 60
+    embalagem_altura = 35
+    embalagem_profundidade = 35
     
     # Verificar se alguma dimensão da caixa é maior que a dimensão correspondente da embalagem
     # (considerando todas as rotações possíveis)

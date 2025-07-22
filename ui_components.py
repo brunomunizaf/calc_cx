@@ -403,7 +403,7 @@ def display_cost_breakdown(estrutura, tipo_tampa, largura, altura, profundidade,
             st.markdown(f"R$ {custo_caixa_papelao:.2f}")
     else:
         # Caixa não cabe na embalagem - não usar embalagem
-        st.info(f"💡 **Caixa não cabe na embalagem:** Dimensões da caixa ({largura}×{altura}×{profundidade} cm) são maiores que as dimensões da embalagem (50×50×60 cm). Não será usada embalagem.")
+        st.info(f"💡 **Caixa não cabe na embalagem:** Dimensões da caixa ({largura}×{altura}×{profundidade} cm) são maiores que as dimensões da embalagem (50×35×35 cm). Não será usada embalagem.")
         
         col1, col2, col3 = st.columns([2, 1, 1])
         with col1:

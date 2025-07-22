@@ -15,13 +15,13 @@ CUSTO_PAPEL_POR_M2 = 15.0  # R$ 15,00/m²
 
 # Custos de cola
 CUSTO_COLA_PVA = 0.02  # R$ 0,02/ml
-CUSTO_COLA_ADESIVA = 0.058  # R$ 0,058/ml
+CUSTO_COLA_ADESIVA = 0.02  # R$ 0,02/ml
 CUSTO_COLA_QUENTE = 0.0125  # R$ 0,0125/ml
 CUSTO_COLA_ISOPOR = 0.015  # R$ 0,015/ml
 CUSTO_COLA_ACRILICO = 0.085  # R$ 0,085/ml
 
 ML_COLA_PVA_POR_M2 = 120  # ml de cola PVA por metro quadrado
-ML_COLA_ADESIVA_POR_M = 50  # ml de cola adesiva por metro linear (perímetro)
+ML_COLA_ADESIVA_POR_M = 10  # ml de cola adesiva por metro linear (perímetro)
 
 # Custos de embalagem e acessórios
 PRECO_FITA_POR_M = 0.627  # R$ 0,627/m

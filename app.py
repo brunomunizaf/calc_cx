@@ -89,16 +89,16 @@ with st.expander("💰 Detalhamento de Custos", expanded=False):
     if estrutura == "Papelão":
         # Calcular área de corte com desperdício baseada no tipo de tampa
         if tipo_tampa == "Tampa Solta":
-            area_corte = calcular_area_corte_com_desperdicio_tampa_solta(largura, altura, profundidade)
+            area_corte = calcular_planificacao_tampa_solta(largura, altura, profundidade)
             area_papelao = area_corte['area_base_mm2'] + area_corte['area_tampa_mm2']
         elif tipo_tampa == "Tampa Livro":
-            area_corte = calcular_area_corte_com_desperdicio_tampa_livro(largura, altura, profundidade)
+            area_corte = calcular_planificacao_tampa_livro(largura, altura, profundidade)
             area_papelao = area_corte['area_planificada_mm2']
         elif tipo_tampa == "Tampa Imã":
-            area_corte = calcular_area_corte_com_desperdicio_tampa_ima(largura, altura, profundidade)
+            area_corte = calcular_planificacao_tampa_ima(largura, altura, profundidade)
             area_papelao = area_corte['area_base_mm2'] + area_corte['area_tampa_mm2'] + area_corte['area_ima_mm2']
         elif tipo_tampa == "Tampa Luva":
-            area_corte = calcular_area_corte_com_desperdicio_tampa_luva(largura, altura, profundidade)
+            area_corte = calcular_planificacao_tampa_luva(largura, altura, profundidade)
             area_papelao = area_corte['area_base_mm2'] + area_corte['area_tampa_mm2'] + area_corte['area_aba_mm2']
         
         # Converter mm² para m² e calcular custo
@@ -120,16 +120,16 @@ with st.expander("💰 Detalhamento de Custos", expanded=False):
     if estrutura == "Papelão":
         # Calcular área de revestimento baseada no tipo de tampa (multiplicar por 2: interno e externo)
         if tipo_tampa == "Tampa Solta":
-            area_corte = calcular_area_corte_com_desperdicio_tampa_solta(largura, altura, profundidade)
+            area_corte = calcular_planificacao_tampa_solta(largura, altura, profundidade)
             area_revestimento = area_corte['area_base_mm2'] + area_corte['area_tampa_mm2']
         elif tipo_tampa == "Tampa Livro":
-            area_corte = calcular_area_corte_com_desperdicio_tampa_livro(largura, altura, profundidade)
+            area_corte = calcular_planificacao_tampa_livro(largura, altura, profundidade)
             area_revestimento = area_corte['area_planificada_mm2']
         elif tipo_tampa == "Tampa Imã":
-            area_corte = calcular_area_corte_com_desperdicio_tampa_ima(largura, altura, profundidade)
+            area_corte = calcular_planificacao_tampa_ima(largura, altura, profundidade)
             area_revestimento = area_corte['area_base_mm2'] + area_corte['area_tampa_mm2'] + area_corte['area_ima_mm2']
         elif tipo_tampa == "Tampa Luva":
-            area_corte = calcular_area_corte_com_desperdicio_tampa_luva(largura, altura, profundidade)
+            area_corte = calcular_planificacao_tampa_luva(largura, altura, profundidade)
             area_revestimento = area_corte['area_base_mm2'] + area_corte['area_tampa_mm2'] + area_corte['area_aba_mm2']
         
         # Multiplicar por 2 (interno e externo) e converter mm² para m²

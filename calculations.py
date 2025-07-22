@@ -344,33 +344,7 @@ def calcular_planificacao_tampa_luva(largura, altura, profundidade):
         'dimensoes_aba': (largura_mm, profundidade_mm)
     } 
 
-def calcular_area_corte_com_desperdicio_tampa_solta(largura, altura, profundidade):
-    """
-    Calcula a área de corte (planificada) da caixa tipo tampa solta, incluindo desperdício.
-    Equivalente à área planificada atual.
-    """
-    return calcular_planificacao_tampa_solta(largura, altura, profundidade) 
 
-def calcular_area_corte_com_desperdicio_tampa_livro(largura, altura, profundidade):
-    """
-    Calcula a área de corte (planificada) da caixa tipo tampa-livro, incluindo desperdício.
-    Equivalente à área planificada atual.
-    """
-    return calcular_planificacao_tampa_livro(largura, altura, profundidade)
-
-def calcular_area_corte_com_desperdicio_tampa_ima(largura, altura, profundidade):
-    """
-    Calcula a área de corte (planificada) da caixa tipo tampa-imã, incluindo desperdício.
-    Equivalente à área planificada atual.
-    """
-    return calcular_planificacao_tampa_ima(largura, altura, profundidade)
-
-def calcular_area_corte_com_desperdicio_tampa_luva(largura, altura, profundidade):
-    """
-    Calcula a área de corte (planificada) da caixa tipo tampa-luva, incluindo desperdício.
-    Equivalente à área planificada atual.
-    """
-    return calcular_planificacao_tampa_luva(largura, altura, profundidade)
 
 def calcular_area_colagem_pva_tampa_solta(largura, altura, profundidade):
     """

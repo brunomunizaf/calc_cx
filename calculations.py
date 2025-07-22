@@ -343,3 +343,172 @@ def calcular_planificacao_tampa_luva(largura, altura, profundidade):
         'dimensoes_tampa': (largura_tampa_planificada, altura_tampa_planificada),
         'dimensoes_aba': (largura_mm, profundidade_mm)
     } 
+
+def calcular_area_corte_com_desperdicio_tampa_solta(largura, altura, profundidade):
+    """
+    Calcula a área de corte (planificada) da caixa tipo tampa solta, incluindo desperdício.
+    Equivalente à área planificada atual.
+    """
+    return calcular_planificacao_tampa_solta(largura, altura, profundidade) 
+
+def calcular_area_corte_com_desperdicio_tampa_livro(largura, altura, profundidade):
+    """
+    Calcula a área de corte (planificada) da caixa tipo tampa-livro, incluindo desperdício.
+    Equivalente à área planificada atual.
+    """
+    return calcular_planificacao_tampa_livro(largura, altura, profundidade)
+
+def calcular_area_corte_com_desperdicio_tampa_ima(largura, altura, profundidade):
+    """
+    Calcula a área de corte (planificada) da caixa tipo tampa-imã, incluindo desperdício.
+    Equivalente à área planificada atual.
+    """
+    return calcular_planificacao_tampa_ima(largura, altura, profundidade)
+
+def calcular_area_corte_com_desperdicio_tampa_luva(largura, altura, profundidade):
+    """
+    Calcula a área de corte (planificada) da caixa tipo tampa-luva, incluindo desperdício.
+    Equivalente à área planificada atual.
+    """
+    return calcular_planificacao_tampa_luva(largura, altura, profundidade)
+
+def calcular_area_colagem_pva_tampa_solta(largura, altura, profundidade):
+    """
+    Calcula a área efetivamente colada com PVA para caixas tipo tampa solta.
+    Considera apenas as superfícies que realmente recebem cola.
+    """
+    # Converter dimensões da caixa para mm
+    largura_mm = largura * 10
+    altura_mm = altura * 10
+    profundidade_mm = profundidade * 10
+    
+    # Área de colagem da base: (largura × altura) + (2 × (largura × profundidade)) + (2 × (altura × profundidade))
+    area_base = largura_mm * altura_mm
+    area_laterais_largura = 2 * (largura_mm * profundidade_mm)
+    area_laterais_altura = 2 * (altura_mm * profundidade_mm)
+    area_colagem_base = area_base + area_laterais_largura + area_laterais_altura
+    
+    # Área de colagem da tampa
+    # Dimensões da tampa: largura + 3×espessura, altura + 3×espessura
+    largura_tampa_mm = largura_mm + 3 * ESPESSURA_PAPELAO_MM
+    altura_tampa_mm = altura_mm + 3 * ESPESSURA_PAPELAO_MM
+    
+    # Área da tampa: (largura_tampa × altura_tampa) + (largura_tampa × 3cm) + (altura_tampa × 3cm)
+    area_tampa_face = largura_tampa_mm * altura_tampa_mm
+    area_tampa_largura = largura_tampa_mm * 30  # 3cm = 30mm
+    area_tampa_altura = altura_tampa_mm * 30  # 3cm = 30mm
+    area_colagem_tampa = area_tampa_face + area_tampa_largura + area_tampa_altura
+    
+    # Área total de colagem
+    area_colagem_total = area_colagem_base + area_colagem_tampa
+    
+    return {
+        'area_colagem_base_mm2': area_colagem_base,
+        'area_colagem_tampa_mm2': area_colagem_tampa,
+        'area_colagem_total_mm2': area_colagem_total
+    } 
+
+def calcular_area_colagem_pva_tampa_livro(largura, altura, profundidade):
+    """
+    Calcula a área efetivamente colada com PVA para caixas tipo tampa-livro.
+    Considera apenas as superfícies que realmente recebem cola.
+    """
+    # Converter dimensões da caixa para mm
+    largura_mm = largura * 10
+    altura_mm = altura * 10
+    profundidade_mm = profundidade * 10
+    
+    # Área da caixa útil = (largura × altura) + (2 × (profundidade × largura)) + (2 × (profundidade × altura))
+    area_base = largura_mm * altura_mm
+    area_laterais_largura = 2 * (profundidade_mm * largura_mm)
+    area_laterais_altura = 2 * (profundidade_mm * altura_mm)
+    area_caixa_util = area_base + area_laterais_largura + area_laterais_altura
+    
+    # Área da tampa = (2 × (largura + 1.5cm) × (altura + 1cm)) + (profundidade × (largura + 1.5cm))
+    largura_tampa = largura_mm + 15  # 1.5cm = 15mm
+    altura_tampa = altura_mm + 10    # 1cm = 10mm
+    area_tampa_face = 2 * (largura_tampa * altura_tampa)
+    area_tampa_profundidade = profundidade_mm * largura_tampa
+    area_tampa = area_tampa_face + area_tampa_profundidade
+    
+    # Área total de colagem
+    area_colagem_total = area_caixa_util + area_tampa
+    
+    return {
+        'area_caixa_util_mm2': area_caixa_util,
+        'area_tampa_mm2': area_tampa,
+        'area_colagem_total_mm2': area_colagem_total
+    } 
+
+def calcular_area_colagem_pva_tampa_ima(largura, altura, profundidade):
+    """
+    Calcula a área efetivamente colada com PVA para caixas tipo tampa-imã.
+    Considera apenas as superfícies que realmente recebem cola.
+    """
+    # Converter dimensões da caixa para mm
+    largura_mm = largura * 10
+    altura_mm = altura * 10
+    profundidade_mm = profundidade * 10
+    
+    # Área da caixa útil = (largura × altura) + (2 × (profundidade × largura)) + (2 × (profundidade × altura))
+    area_base = largura_mm * altura_mm
+    area_laterais_largura = 2 * (profundidade_mm * largura_mm)
+    area_laterais_altura = 2 * (profundidade_mm * altura_mm)
+    area_caixa_util = area_base + area_laterais_largura + area_laterais_altura
+    
+    # Área da tampa = ((largura + 1cm) × altura) + (profundidade × (largura + 1cm)) + ((largura + 1cm) × (altura + 0.7cm)) + ((profundidade - 0.5cm) × (largura + 1cm))
+    largura_tampa = largura_mm + 10  # 1cm = 10mm
+    altura_tampa = altura_mm + 7     # 0.7cm = 7mm
+    area_tampa_face = largura_tampa * altura_mm
+    area_tampa_profundidade = profundidade_mm * largura_tampa
+    area_tampa_altura = largura_tampa * altura_tampa
+    area_tampa_adicional = (profundidade_mm - 5) * largura_tampa  # 0.5cm = 5mm
+    area_tampa = area_tampa_face + area_tampa_profundidade + area_tampa_altura + area_tampa_adicional
+    
+    # Área total de colagem
+    area_colagem_total = area_caixa_util + area_tampa
+    
+    return {
+        'area_caixa_util_mm2': area_caixa_util,
+        'area_tampa_mm2': area_tampa,
+        'area_colagem_total_mm2': area_colagem_total
+    } 
+
+def calcular_area_colagem_pva_tampa_luva(largura, altura, profundidade):
+    """
+    Calcula a área efetivamente colada com PVA para caixas tipo tampa-luva.
+    Considera apenas as superfícies que realmente recebem cola.
+    """
+    # Converter dimensões da caixa para mm
+    largura_mm = largura * 10
+    altura_mm = altura * 10
+    profundidade_mm = profundidade * 10
+    
+    # Área de colagem da base: (largura × altura) + (2 × (largura × profundidade)) + (2 × (altura × profundidade))
+    area_base = largura_mm * altura_mm
+    area_laterais_largura = 2 * (largura_mm * profundidade_mm)
+    area_laterais_altura = 2 * (altura_mm * profundidade_mm)
+    area_colagem_base = area_base + area_laterais_largura + area_laterais_altura
+    
+    # Área de colagem da tampa (similar à tampa solta)
+    largura_tampa_mm = largura_mm + 3 * ESPESSURA_PAPELAO_MM
+    altura_tampa_mm = altura_mm + 3 * ESPESSURA_PAPELAO_MM
+    
+    # Área da tampa: (largura_tampa × altura_tampa) + (largura_tampa × 3cm) + (altura_tampa × 3cm)
+    area_tampa_face = largura_tampa_mm * altura_tampa_mm
+    area_tampa_largura = largura_tampa_mm * 30  # 3cm = 30mm
+    area_tampa_altura = altura_tampa_mm * 30  # 3cm = 30mm
+    area_colagem_tampa = area_tampa_face + area_tampa_largura + area_tampa_altura
+    
+    # Área de colagem da aba lateral (largura × profundidade)
+    area_colagem_aba = largura_mm * profundidade_mm
+    
+    # Área total de colagem
+    area_colagem_total = area_colagem_base + area_colagem_tampa + area_colagem_aba
+    
+    return {
+        'area_colagem_base_mm2': area_colagem_base,
+        'area_colagem_tampa_mm2': area_colagem_tampa,
+        'area_colagem_aba_mm2': area_colagem_aba,
+        'area_colagem_total_mm2': area_colagem_total
+    } 

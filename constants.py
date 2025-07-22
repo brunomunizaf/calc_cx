@@ -20,6 +20,8 @@ CUSTO_COLA_QUENTE = 0.0125  # R$ 0,0125/ml
 CUSTO_COLA_ISOPOR = 0.015  # R$ 0,015/ml
 CUSTO_COLA_ACRILICO = 0.085  # R$ 0,085/ml
 
+ML_COLA_PVA_POR_M2 = 120  # ml de cola PVA por metro quadrado
+
 # Custos de embalagem e acessórios
 PRECO_FITA_POR_M = 0.627  # R$ 0,627/m
 PRECO_REBITE_UNITARIO = 0.10  # R$ 0,10/un

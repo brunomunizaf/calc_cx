@@ -166,7 +166,12 @@ with st.expander("💰 Detalhamento de Custos", expanded=False):
         ml_cola_total = area_colagem_m2 * ML_COLA_PVA_POR_M2
         
         custo_cola_pva = CUSTO_COLA_PVA * ml_cola_total
-        custo_cola_adesiva = CUSTO_COLA_ADESIVA * ml_cola_total
+        
+        # Calcular cola adesiva baseada no perímetro do papelão
+        perimetro_papelao = calcular_perimetro_papelao(largura, altura, profundidade, tipo_tampa)
+        ml_cola_adesiva_total = perimetro_papelao['perimetro_total_m'] * ML_COLA_ADESIVA_POR_M
+        custo_cola_adesiva = CUSTO_COLA_ADESIVA * ml_cola_adesiva_total
+        
         custo_cola_quente = CUSTO_COLA_QUENTE * ml_cola_total if usar_cola_quente else 0
         custo_cola_isopor = CUSTO_COLA_ISOPOR * ml_cola_total if usar_cola_isopor else 0
         custo_cola_acrilico = 0

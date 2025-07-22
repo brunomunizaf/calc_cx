@@ -448,6 +448,78 @@ def calcular_area_colagem_pva_tampa_ima(largura, altura, profundidade):
         'area_colagem_total_mm2': area_colagem_total
     } 
 
+def calcular_perimetro_papelao(largura, altura, profundidade, tipo_tampa):
+    """
+    Calcula o perímetro do papelão para cálculo de cola adesiva.
+    O perímetro é usado para colar o revestimento.
+    """
+    # Converter dimensões da caixa para mm
+    largura_mm = largura * 10
+    altura_mm = altura * 10
+    profundidade_mm = profundidade * 10
+    
+    if tipo_tampa == "Tampa Solta":
+        # Perímetro da base planificada
+        largura_base_planificada = largura_mm + 2 * profundidade_mm
+        altura_base_planificada = altura_mm + 2 * profundidade_mm
+        perimetro_base = 2 * (largura_base_planificada + altura_base_planificada)
+        
+        # Perímetro da tampa planificada
+        largura_tampa = largura_mm + 3 * ESPESSURA_PAPELAO_MM
+        altura_tampa = altura_mm + 3 * ESPESSURA_PAPELAO_MM
+        largura_tampa_planificada = largura_tampa + 2 * 25  # 25mm de profundidade
+        altura_tampa_planificada = altura_tampa + 2 * 25
+        perimetro_tampa = 2 * (largura_tampa_planificada + altura_tampa_planificada)
+        
+        perimetro_total = perimetro_base + perimetro_tampa
+        
+    elif tipo_tampa == "Tampa Livro":
+        # Perímetro da planificação única
+        largura_planificada = largura_mm + 2 * profundidade_mm
+        altura_planificada = 2 * altura_mm + profundidade_mm
+        perimetro_total = 2 * (largura_planificada + altura_planificada)
+        
+    elif tipo_tampa == "Tampa Imã":
+        # Perímetro da base planificada
+        largura_base_planificada = largura_mm + 2 * profundidade_mm
+        altura_base_planificada = altura_mm + 2 * profundidade_mm
+        perimetro_base = 2 * (largura_base_planificada + altura_base_planificada)
+        
+        # Perímetro da tampa planificada
+        largura_tampa = largura_mm + 3 * ESPESSURA_PAPELAO_MM
+        altura_tampa = altura_mm + 3 * ESPESSURA_PAPELAO_MM
+        largura_tampa_planificada = largura_tampa + 2 * 25
+        altura_tampa_planificada = altura_tampa + 2 * 25
+        perimetro_tampa = 2 * (largura_tampa_planificada + altura_tampa_planificada)
+        
+        # Perímetro do imã (largura × altura)
+        perimetro_ima = 2 * (largura_mm + 20)  # 20mm de altura do imã
+        
+        perimetro_total = perimetro_base + perimetro_tampa + perimetro_ima
+        
+    elif tipo_tampa == "Tampa Luva":
+        # Perímetro da base planificada
+        largura_base_planificada = largura_mm + 2 * profundidade_mm
+        altura_base_planificada = altura_mm + 2 * profundidade_mm
+        perimetro_base = 2 * (largura_base_planificada + altura_base_planificada)
+        
+        # Perímetro da tampa planificada
+        largura_tampa = largura_mm + 3 * ESPESSURA_PAPELAO_MM
+        altura_tampa = altura_mm + 3 * ESPESSURA_PAPELAO_MM
+        largura_tampa_planificada = largura_tampa + 2 * 25
+        altura_tampa_planificada = altura_tampa + 2 * 25
+        perimetro_tampa = 2 * (largura_tampa_planificada + altura_tampa_planificada)
+        
+        # Perímetro da aba lateral
+        perimetro_aba = 2 * (largura_mm + profundidade_mm)
+        
+        perimetro_total = perimetro_base + perimetro_tampa + perimetro_aba
+    
+    return {
+        'perimetro_total_mm': perimetro_total,
+        'perimetro_total_m': perimetro_total / 1000  # Converter para metros
+    }
+
 def calcular_area_colagem_pva_tampa_luva(largura, altura, profundidade):
     """
     Calcula a área efetivamente colada com PVA para caixas tipo tampa-luva.

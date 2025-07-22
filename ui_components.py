@@ -171,8 +171,22 @@ def display_cost_breakdown(estrutura, tipo_tampa, largura, altura, profundidade,
     
     # Custos de estrutura
     if estrutura == "Papelão":
-        area_papelao = calcular_area_papelao(largura, altura, profundidade, tipo_tampa)
-        area_papelao_m2 = area_papelao / 10000
+        # Calcular área de papelão baseada no tipo de tampa
+        if tipo_tampa == "Tampa Solta":
+            area_corte = calcular_planificacao_tampa_solta(largura, altura, profundidade)
+            area_papelao = area_corte['area_base_mm2'] + area_corte['area_tampa_mm2']
+        elif tipo_tampa == "Tampa Livro":
+            area_corte = calcular_planificacao_tampa_livro(largura, altura, profundidade)
+            area_papelao = area_corte['area_planificada_mm2']
+        elif tipo_tampa == "Tampa Imã":
+            area_corte = calcular_planificacao_tampa_ima(largura, altura, profundidade)
+            area_papelao = area_corte['area_base_mm2'] + area_corte['area_tampa_mm2'] + area_corte['area_ima_mm2']
+        elif tipo_tampa == "Tampa Luva":
+            area_corte = calcular_planificacao_tampa_luva(largura, altura, profundidade)
+            area_papelao = area_corte['area_base_mm2'] + area_corte['area_tampa_mm2'] + area_corte['area_aba_mm2']
+        
+        # Converter mm² para m²
+        area_papelao_m2 = area_papelao / 1000000  # Converter mm² para m²
         custo_papelao = area_papelao_m2 * PRECO_PAPELAO_POR_M2
         custo_acrilico = 0
     else:
@@ -187,8 +201,23 @@ def display_cost_breakdown(estrutura, tipo_tampa, largura, altura, profundidade,
     
     # Custos de revestimento
     if estrutura == "Papelão":
-        area_revestimento = (largura * altura) + (2 * largura * profundidade) + (2 * altura * profundidade)
-        area_revestimento_m2 = area_revestimento / 10000
+        # Calcular área de revestimento baseada no tipo de tampa (multiplicar por 2: interno e externo)
+        if tipo_tampa == "Tampa Solta":
+            area_corte = calcular_planificacao_tampa_solta(largura, altura, profundidade)
+            area_revestimento = area_corte['area_base_mm2'] + area_corte['area_tampa_mm2']
+        elif tipo_tampa == "Tampa Livro":
+            area_corte = calcular_planificacao_tampa_livro(largura, altura, profundidade)
+            area_revestimento = area_corte['area_planificada_mm2']
+        elif tipo_tampa == "Tampa Imã":
+            area_corte = calcular_planificacao_tampa_ima(largura, altura, profundidade)
+            area_revestimento = area_corte['area_base_mm2'] + area_corte['area_tampa_mm2'] + area_corte['area_ima_mm2']
+        elif tipo_tampa == "Tampa Luva":
+            area_corte = calcular_planificacao_tampa_luva(largura, altura, profundidade)
+            area_revestimento = area_corte['area_base_mm2'] + area_corte['area_tampa_mm2'] + area_corte['area_aba_mm2']
+        
+        # Multiplicar por 2 (interno e externo) e converter mm² para m²
+        area_revestimento_m2 = (area_revestimento * 2) / 1000000  # Converter mm² para m²
+        
         if tipo_revestimento == "Vinil UV":
             custo_revestimento = area_revestimento_m2 * CUSTO_VINIL_UV_POR_M2
         elif tipo_revestimento == "Papel":
@@ -200,10 +229,31 @@ def display_cost_breakdown(estrutura, tipo_tampa, largura, altura, profundidade,
     
     # Custos de cola
     if estrutura == "Papelão":
-        area_total_caixa = area_papelao
-        ml_cola_total = area_total_caixa * 0.01
+        # Calcular área de colagem PVA baseada no tipo de tampa (multiplicar por 2: ambos os lados)
+        if tipo_tampa == "Tampa Solta":
+            area_colagem = calcular_area_colagem_pva_tampa_solta(largura, altura, profundidade)
+            area_colagem_total = area_colagem['area_colagem_total_mm2']
+        elif tipo_tampa == "Tampa Livro":
+            area_colagem = calcular_area_colagem_pva_tampa_livro(largura, altura, profundidade)
+            area_colagem_total = area_colagem['area_colagem_total_mm2']
+        elif tipo_tampa == "Tampa Imã":
+            area_colagem = calcular_area_colagem_pva_tampa_ima(largura, altura, profundidade)
+            area_colagem_total = area_colagem['area_colagem_total_mm2']
+        elif tipo_tampa == "Tampa Luva":
+            area_colagem = calcular_area_colagem_pva_tampa_luva(largura, altura, profundidade)
+            area_colagem_total = area_colagem['area_colagem_total_mm2']
+        
+        # Multiplicar por 2 (ambos os lados do papelão) e converter mm² para m²
+        area_colagem_m2 = (area_colagem_total * 2) / 1000000  # Converter mm² para m²
+        ml_cola_total = area_colagem_m2 * ML_COLA_PVA_POR_M2
+        
         custo_cola_pva = CUSTO_COLA_PVA * ml_cola_total
-        custo_cola_adesiva = CUSTO_COLA_ADESIVA * ml_cola_total
+        
+        # Calcular cola adesiva baseada no perímetro do papelão
+        perimetro_papelao = calcular_perimetro_papelao(largura, altura, profundidade, tipo_tampa)
+        ml_cola_adesiva_total = perimetro_papelao['perimetro_total_m'] * ML_COLA_ADESIVA_POR_M
+        custo_cola_adesiva = CUSTO_COLA_ADESIVA * ml_cola_adesiva_total
+        
         custo_cola_quente = CUSTO_COLA_QUENTE * ml_cola_total if usar_cola_quente else 0
         custo_cola_isopor = CUSTO_COLA_ISOPOR * ml_cola_total if usar_cola_isopor else 0
         custo_cola_acrilico = 0
@@ -341,7 +391,7 @@ def display_cost_breakdown(estrutura, tipo_tampa, largura, altura, profundidade,
     if custo_cola_adesiva > 0:
         col1, col2, col3 = st.columns([2, 1, 1])
         with col1:
-            st.markdown(f"Cola adesiva ({ml_cola_total:.1f} ml)")
+            st.markdown(f"Cola adesiva ({ml_cola_adesiva_total:.1f} ml)")
         with col2:
             st.markdown("1 un")
         with col3:

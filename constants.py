@@ -21,6 +21,7 @@ CUSTO_COLA_ISOPOR = 0.015  # R$ 0,015/ml
 CUSTO_COLA_ACRILICO = 0.085  # R$ 0,085/ml
 
 ML_COLA_PVA_POR_M2 = 120  # ml de cola PVA por metro quadrado
+ML_COLA_ADESIVA_POR_M = 50  # ml de cola adesiva por metro linear (perímetro)
 
 # Custos de embalagem e acessórios
 PRECO_FITA_POR_M = 0.627  # R$ 0,627/m

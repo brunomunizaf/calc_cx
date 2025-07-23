@@ -113,8 +113,6 @@ def aplicar_multiplicador_complexidade(custo_variavel, tem_berco, tem_nicho):
         return custo_variavel * MULTIPLICADOR_AMBOS
     elif tem_berco:
         return custo_variavel * MULTIPLICADOR_BERCO
-    elif tem_nicho:
-        return custo_variavel * MULTIPLICADOR_NICHO
     else:
         return custo_variavel
 
@@ -448,6 +446,47 @@ def calcular_area_colagem_pva_tampa_ima(largura, altura, profundidade):
         'area_colagem_total_mm2': area_colagem_total
     } 
 
+def calcular_planificacao_tampa_redonda(largura, altura, profundidade):
+    """
+    Calcula a planificação para caixas com tampa redonda
+    Retorna: (area_planificada, caixas_por_chapa)
+    """
+    # Converter dimensões da caixa para mm
+    largura_mm = largura * 10
+    altura_mm = altura * 10
+    profundidade_mm = profundidade * 10
+    
+    # Para caixas redondas, usar diâmetro como largura
+    diametro_mm = largura_mm
+    raio_mm = diametro_mm / 2
+    
+    # Área da base circular
+    area_base = 3.14159 * raio_mm * raio_mm
+    
+    # Área lateral (circunferência × altura)
+    area_lateral = 2 * 3.14159 * raio_mm * altura_mm
+    
+    # Área da tampa (maior que a base)
+    raio_tampa_mm = raio_mm + 3 * ESPESSURA_PAPELAO_MM
+    area_tampa = 3.14159 * raio_tampa_mm * raio_tampa_mm
+    
+    # Área total planificada
+    area_planificada = area_base + area_lateral + area_tampa
+    
+    # Calcular quantas caixas cabem por chapa
+    # Para caixas redondas, usar área aproximada
+    area_disponivel = (CHAPA_LARGURA_MM - MARGEM_MM) * (CHAPA_ALTURA_MM - MARGEM_MM)
+    caixas_por_chapa = int(area_disponivel / area_planificada)
+    
+    return {
+        'area_planificada_mm2': area_planificada,
+        'caixas_por_chapa': caixas_por_chapa,
+        'diametro_mm': diametro_mm,
+        'altura_mm': altura_mm
+    }
+
+
+
 def calcular_perimetro_papelao(largura, altura, profundidade, tipo_tampa):
     """
     Calcula o perímetro do papelão para cálculo de cola adesiva.
@@ -514,6 +553,18 @@ def calcular_perimetro_papelao(largura, altura, profundidade, tipo_tampa):
         perimetro_aba = 2 * (largura_mm + profundidade_mm)
         
         perimetro_total = perimetro_base + perimetro_tampa + perimetro_aba
+    elif tipo_tampa == "Tampa Redonda":
+        # Perímetro da base circular
+        diametro_mm = largura_mm
+        raio_mm = diametro_mm / 2
+        perimetro_base = 2 * 3.14159 * raio_mm
+        
+        # Perímetro da tampa circular
+        raio_tampa_mm = raio_mm + 3 * ESPESSURA_PAPELAO_MM
+        perimetro_tampa = 2 * 3.14159 * raio_tampa_mm
+        
+        perimetro_total = perimetro_base + perimetro_tampa
+
     
     return {
         'perimetro_total_mm': perimetro_total,
@@ -557,4 +608,40 @@ def calcular_area_colagem_pva_tampa_luva(largura, altura, profundidade):
         'area_colagem_tampa_mm2': area_colagem_tampa,
         'area_colagem_aba_mm2': area_colagem_aba,
         'area_colagem_total_mm2': area_colagem_total
-    } 
+    }
+
+def calcular_area_colagem_pva_tampa_redonda(largura, altura, profundidade):
+    """
+    Calcula a área efetivamente colada com PVA para caixas tipo tampa redonda.
+    Considera apenas as superfícies que realmente recebem cola.
+    """
+    # Converter dimensões da caixa para mm
+    largura_mm = largura * 10
+    altura_mm = altura * 10
+    profundidade_mm = profundidade * 10
+    
+    # Para caixas redondas, usar diâmetro como largura
+    diametro_mm = largura_mm
+    raio_mm = diametro_mm / 2
+    
+    # Área de colagem da base circular
+    area_colagem_base = 3.14159 * raio_mm * raio_mm
+    
+    # Área de colagem lateral (circunferência × altura)
+    area_colagem_lateral = 2 * 3.14159 * raio_mm * altura_mm
+    
+    # Área de colagem da tampa circular
+    raio_tampa_mm = raio_mm + 3 * ESPESSURA_PAPELAO_MM
+    area_colagem_tampa = 3.14159 * raio_tampa_mm * raio_tampa_mm
+    
+    # Área total de colagem
+    area_colagem_total = area_colagem_base + area_colagem_lateral + area_colagem_tampa
+    
+    return {
+        'area_colagem_base_mm2': area_colagem_base,
+        'area_colagem_lateral_mm2': area_colagem_lateral,
+        'area_colagem_tampa_mm2': area_colagem_tampa,
+        'area_colagem_total_mm2': area_colagem_total
+    }
+
+ 

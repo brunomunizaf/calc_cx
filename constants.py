@@ -36,8 +36,7 @@ CUSTO_COLA_PERMANENTE = 0.028  # R$ 0,028 por unidade
 
 # Multiplicadores de complexidade
 MULTIPLICADOR_BERCO = 1.30  # +30%
-MULTIPLICADOR_NICHO = 1.50  # +50%
-MULTIPLICADOR_AMBOS = 1.80  # +80%
+MULTIPLICADOR_AMBOS = 1.50  # +50% (berço + nicho)
 
 # Dimensões das chapas de papelão
 CHAPA_LARGURA_MM = 1040

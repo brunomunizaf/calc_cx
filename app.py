@@ -15,26 +15,39 @@ st.title("📦 Custo de produção | Touché")
 st.markdown("---")
 
 # Seção 1: Dados técnicos da caixa
-quantidade_caixas = st.number_input("Número de caixas", min_value=1, value=1, step=1)
-
+# Número de caixas, tipo de caixa e estrutura em uma coluna
 col1, col2, col3 = st.columns(3)
 with col1:
-    largura = st.number_input("Largura (cm)", min_value=1.0, value=20.0, step=0.1)
+    quantidade_caixas = st.number_input("Número de caixas", min_value=1, value=1, step=1)
 with col2:
-    altura = st.number_input("Altura (cm)", min_value=1.0, value=15.0, step=0.1)
+    tipo_tampa = st.selectbox(
+        "Tipo da Caixa",
+        ["Tampa Solta", "Tampa Livro", "Tampa Luva", "Tampa Imã", "Tampa Redonda"]
+    )
 with col3:
-    profundidade = st.number_input("Profundidade (cm)", min_value=1.0, value=10.0, step=0.1)
+    estrutura = st.selectbox(
+        "Tipo de Estrutura",
+        ["Papelão", "Acrílico"],
+        help="Papelão permite revestimentos, Acrílico não"
+    )
 
-tipo_tampa = st.selectbox(
-    "Tipo da Caixa",
-    ["Tampa Solta", "Tampa Livro", "Tampa Luva", "Tampa Imã"]
-)
-
-estrutura = st.selectbox(
-    "Tipo de Estrutura",
-    ["Papelão", "Acrílico"],
-    help="Papelão permite revestimentos, Acrílico não"
-)
+# Dimensões baseadas no tipo de caixa
+if tipo_tampa == "Tampa Redonda":
+    col1, col2 = st.columns(2)
+    with col1:
+        raio = st.number_input("Raio (cm)", min_value=1.0, value=10.0, step=0.1)
+        largura = raio * 2  # Diâmetro = 2 * raio
+        altura = raio * 2   # Para caixas redondas, altura = diâmetro
+    with col2:
+        profundidade = st.number_input("Profundidade (cm)", min_value=1.0, value=10.0, step=0.1)
+else:
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        largura = st.number_input("Largura (cm)", min_value=1.0, value=20.0, step=0.1)
+    with col2:
+        altura = st.number_input("Altura (cm)", min_value=1.0, value=15.0, step=0.1)
+    with col3:
+        profundidade = st.number_input("Profundidade (cm)", min_value=1.0, value=10.0, step=0.1)
 
 # Determinar colas automaticamente baseado na estrutura
 colas_automaticas = determinar_colas_automaticas(estrutura, False)
@@ -45,18 +58,28 @@ if estrutura == "Papelão":
         "Tipo de revestimento",
         ["Vinil UV", "Papel"],
         index=1,  # Papel pré-selecionado (índice 1)
-        help="Vinil UV: +R$ 140,00/m² | Papel: +R$ 15,00/m²"
+        help="Vinil UV: +140,00/m² | Papel: +15,00/m²"
     )
 elif estrutura == "Acrílico":
     st.write("❌ **Nenhum revestimento** disponível para acrílico")
     tipo_revestimento = "Nenhum"
 
 # Complexidade
-tem_berco = st.checkbox("Berço (+30%)")
-tem_nicho = st.checkbox("Nicho (+50%)")
+tem_berco = st.checkbox(
+    "Tem berço", 
+    help="+30% do total"
+)
+tem_nicho = st.checkbox(
+    "Nicho também", 
+    help="+20% do total",
+    disabled=not tem_berco
+)
 
 # Insumos gráficos
-usar_serigrafia = st.checkbox("Serigrafia (+R$ 1,01/cor/impressão)")
+usar_serigrafia = st.checkbox(
+    "Serigrafia",
+    help="+R$ 1,01/cor/impressão",
+)
 num_cores_serigrafia = st.number_input("Nº de cores", min_value=1, value=1, disabled=not usar_serigrafia)
 num_impressoes_serigrafia = st.number_input("Nº de impressões", min_value=1, value=1, disabled=not usar_serigrafia)
 
@@ -69,13 +92,31 @@ tipo_impressao = st.selectbox(
 )
 
 # Fita e Rebites
-metros_fita = st.number_input("Fita (+R$ 0,627/m)", min_value=0.0, value=0.0, step=0.1)
-num_rebites = st.number_input("Rebites (+R$ 0,10/un)", min_value=0, value=0, step=1)
+metros_fita = st.number_input(
+    "Fita (m)", 
+    min_value=0.0, 
+    value=0.0, 
+    step=0.1,
+    help="+R$ 0,627/m"
+)
+num_rebites = st.number_input(
+    "Rebites (un)", 
+    min_value=0, 
+    value=0, 
+    step=1,
+    help="+R$ 0,10/un"
+)
 
 # Colas opcionais (apenas para papelão)
 if estrutura == "Papelão":
-    usar_cola_quente = st.checkbox("Cola quente (+R$ 0,0125)")
-    usar_cola_isopor = st.checkbox("Cola de isopor (+R$ 0,015)")
+    usar_cola_quente = st.checkbox(
+        "Cola quente",
+        help="+R$ 0,0125/caixa"
+    )
+    usar_cola_isopor = st.checkbox(
+        "Cola de isopor",
+        help="+R$ 0,015/caixa"
+    )
 else:
     usar_cola_quente = False
     usar_cola_isopor = False
@@ -84,7 +125,7 @@ else:
 custos_fixos = display_fixed_costs_section()
 
 # Cálculos
-with st.expander("💰 Detalhamento de Custos", expanded=False):
+with st.expander("💰 Detalhamento de custos por unidade", expanded=True):
     # Cálculo da área baseado na estrutura
     if estrutura == "Papelão":
         # Calcular área de corte com desperdício baseada no tipo de tampa
@@ -100,6 +141,10 @@ with st.expander("💰 Detalhamento de Custos", expanded=False):
         elif tipo_tampa == "Tampa Luva":
             area_corte = calcular_planificacao_tampa_luva(largura, altura, profundidade)
             area_papelao = area_corte['area_base_mm2'] + area_corte['area_tampa_mm2'] + area_corte['area_aba_mm2']
+        elif tipo_tampa == "Tampa Redonda":
+            area_corte = calcular_planificacao_tampa_redonda(largura, altura, profundidade)
+            area_papelao = area_corte['area_planificada_mm2']
+
         
         # Converter mm² para m² e calcular custo
         area_papelao_m2 = area_papelao / 1000000  # Converter mm² para m²
@@ -131,6 +176,10 @@ with st.expander("💰 Detalhamento de Custos", expanded=False):
         elif tipo_tampa == "Tampa Luva":
             area_corte = calcular_planificacao_tampa_luva(largura, altura, profundidade)
             area_revestimento = area_corte['area_base_mm2'] + area_corte['area_tampa_mm2'] + area_corte['area_aba_mm2']
+        elif tipo_tampa == "Tampa Redonda":
+            area_corte = calcular_planificacao_tampa_redonda(largura, altura, profundidade)
+            area_revestimento = area_corte['area_planificada_mm2']
+
         
         # Multiplicar por 2 (interno e externo) e converter mm² para m²
         area_revestimento_m2 = (area_revestimento * 2) / 1000000  # Converter mm² para m²
@@ -160,6 +209,10 @@ with st.expander("💰 Detalhamento de Custos", expanded=False):
         elif tipo_tampa == "Tampa Luva":
             area_colagem = calcular_area_colagem_pva_tampa_luva(largura, altura, profundidade)
             area_colagem_total = area_colagem['area_colagem_total_mm2']
+        elif tipo_tampa == "Tampa Redonda":
+            area_colagem = calcular_area_colagem_pva_tampa_redonda(largura, altura, profundidade)
+            area_colagem_total = area_colagem['area_colagem_total_mm2']
+
         
         # Multiplicar por 2 (ambos os lados do papelão) e converter mm² para m²
         area_colagem_m2 = (area_colagem_total * 2) / 1000000  # Converter mm² para m²
@@ -197,25 +250,29 @@ with st.expander("💰 Detalhamento de Custos", expanded=False):
     custo_rebites = num_rebites * PRECO_REBITE_UNITARIO
     custo_ima_chapa = calcular_custo_ima_chapa_automatico(tipo_tampa, largura)
     
-    # Calcular custo das caixas de papelão para embalar todas as caixas
+    # Calcular custo das caixas de papelão para embalar todas as caixas (apenas para o total do projeto)
     num_caixas_por_embalagem = calcular_max_caixas_por_embalagem(largura, altura, profundidade)
     if num_caixas_por_embalagem > 0:
         num_caixas_papelao_necessarias = math.ceil(quantidade_caixas / num_caixas_por_embalagem)
-        custo_caixa_papelao = (num_caixas_papelao_necessarias * PRECO_CAIXA_PAPELAO) / quantidade_caixas
+        custo_caixa_papelao_total = num_caixas_papelao_necessarias * PRECO_CAIXA_PAPELAO
     else:
         # Se a caixa é muito grande, cada caixa precisa de uma embalagem própria
-        custo_caixa_papelao = PRECO_CAIXA_PAPELAO
+        custo_caixa_papelao_total = quantidade_caixas * PRECO_CAIXA_PAPELAO
+    
+    # Para o custo unitário, não incluir embalagem
+    custo_caixa_papelao = 0
 
     # Custos adicionais (só aplicados se há serigrafia)
-    custo_retardador = CUSTO_RETARDADOR_VINILICO if usar_serigrafia else 0
-    custo_emulsao = CUSTO_EMULSAO_SENSIBILIZANTE if usar_serigrafia else 0
-    custo_cola_permanente = CUSTO_COLA_PERMANENTE if usar_serigrafia else 0
+    # Retardador, emulsão e cola permanente serão aplicados ao total do projeto, não por unidade
+    custo_retardador = 0
+    custo_emulsao = 0
+    custo_cola_permanente = 0
 
-    # Total de custos variáveis
+    # Total de custos variáveis (sem embalagem)
     total_custos_variaveis = (
         custo_papelao + custo_acrilico + custo_serigrafia + custo_impressao + 
         custo_revestimento + custo_cola_pva + custo_cola_adesiva + custo_cola_quente + custo_cola_isopor + 
-        custo_cola_acrilico + custo_fita + custo_rebites + custo_ima_chapa + custo_caixa_papelao + 
+        custo_cola_acrilico + custo_fita + custo_rebites + custo_ima_chapa + 
         custo_retardador + custo_emulsao + custo_cola_permanente
     )
 
@@ -230,11 +287,14 @@ with st.expander("💰 Detalhamento de Custos", expanded=False):
     # Custo final
     custo_final = custo_fixo_unitario + total_custos_variaveis_complexidade
 
-    # Custo total do projeto
-    custo_total_projeto = custo_final * quantidade_caixas
+    # Custo total do projeto (incluindo embalagem)
+    custo_total_projeto = (custo_final * quantidade_caixas) + custo_caixa_papelao_total
+    
+    # Adicionar custos de serigrafia ao total do projeto (se há serigrafia)
+    if usar_serigrafia:
+        custo_total_projeto += CUSTO_COLA_PERMANENTE + CUSTO_RETARDADOR_VINILICO + CUSTO_EMULSAO_SENSIBILIZANTE
 
-    # Exibir seções de planificação e custos
-    display_planification_section(estrutura, tipo_tampa, largura, altura, profundidade, quantidade_caixas)
+    # Exibir seções de custos
     custo_final_detalhado, custo_total_projeto_detalhado = display_cost_breakdown(estrutura, tipo_tampa, largura, altura, profundidade, quantidade_caixas,
                           usar_serigrafia, num_cores_serigrafia, num_impressoes_serigrafia,
                           usar_impressao_digital, tipo_impressao, tipo_revestimento,

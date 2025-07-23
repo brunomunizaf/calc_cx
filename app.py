@@ -58,7 +58,7 @@ if estrutura == "Papelão":
         "Tipo de revestimento",
         ["Vinil UV", "Papel"],
         index=1,  # Papel pré-selecionado (índice 1)
-        help="Vinil UV: +140,00/m² | Papel: +15,00/m²"
+        help="Vinil UV: +R\$140,00/m² | Papel: +R$15,00/m²"
     )
 elif estrutura == "Acrílico":
     st.write("❌ **Nenhum revestimento** disponível para acrílico")

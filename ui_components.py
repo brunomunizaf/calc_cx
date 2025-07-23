@@ -219,12 +219,11 @@ def display_cost_breakdown(estrutura, tipo_tampa, largura, altura, profundidade,
     custo_emulsao = 0
     custo_cola_permanente = 0
     
-    # Calcular total de custos variáveis (sem embalagem)
+    # Calcular total de custos variáveis (sem embalagem e sem custos de serigrafia adicionais)
     total_custos_variaveis = (
         custo_papelao + custo_acrilico + custo_serigrafia + custo_impressao + 
         custo_revestimento + custo_cola_pva + custo_cola_adesiva + custo_cola_quente + custo_cola_isopor + 
-        custo_cola_acrilico + custo_fita + custo_rebites + custo_ima_chapa + 
-        custo_retardador + custo_emulsao + custo_cola_permanente
+        custo_cola_acrilico + custo_fita + custo_rebites + custo_ima_chapa
     )
     
     # Aplicar multiplicador de complexidade
@@ -307,18 +306,18 @@ def display_cost_breakdown(estrutura, tipo_tampa, largura, altura, profundidade,
             st.markdown(f"R$ {custo_cola_adesiva:.2f}")    
     
     if custo_cola_quente > 0:
-        st.info(f"💡 Custo de cola quente = ml de cola PVA x R$ {CUSTO_COLA_QUENTE}/ml")
+        st.info(f"💡 Custo de cola quente = custo de cola PVA (R\$ {custo_cola_pva:.2f}) x R$ {CUSTO_COLA_QUENTE}")
         col1, col2 = st.columns([3, 1])
         with col1:
-            st.markdown(f"Cola quente ({ml_cola_total:.1f} ml)")
+            st.markdown(f"Cola quente")
         with col2:
             st.markdown(f"R$ {custo_cola_quente:.2f}")    
     
     if custo_cola_isopor > 0:
-        st.info(f"💡 Custo de cola de isopor = ml de cola PVA x R$ {CUSTO_COLA_ISOPOR}/ml")
+        st.info(f"💡 Custo de cola de isopor = custo de cola PVA (R\$ {custo_cola_pva:.2f}) x R$ {CUSTO_COLA_ISOPOR}")
         col1, col2 = st.columns([3, 1])
         with col1:
-            st.markdown(f"Cola de isopor ({ml_cola_total:.1f} ml)")
+            st.markdown(f"Cola de isopor")
         with col2:
             st.markdown(f"R$ {custo_cola_isopor:.2f}")    
     
@@ -383,15 +382,15 @@ def display_cost_breakdown(estrutura, tipo_tampa, largura, altura, profundidade,
         num_embalagens_necessarias = math.ceil(quantidade_caixas / num_caixas_por_embalagem)
         custo_total_embalagem = num_embalagens_necessarias * PRECO_CAIXA_PAPELAO
         custo_total_projeto += custo_total_embalagem
-        
+
         # Mostrar seção de embalagem no total do projeto
         st.markdown("---")
-        st.markdown("**📦 CUSTOS DE EMBALAGEM (INCLUÍDOS NO TOTAL DO PROJETO)**")
-        st.info(f"💡 Cada caixa de embalagem (R$ {PRECO_CAIXA_PAPELAO:.2f}) acomoda até {num_caixas_por_embalagem} caixas. Para {quantidade_caixas} caixas, precisamos de {num_embalagens_necessarias} embalagem(s).")
+        st.markdown("**📦 CUSTOS DE DESPACHE (INCLUÍDOS NO TOTAL DO PROJETO)**")
+        st.info(f"💡 Cada caixa de papelão ondulado embala até {num_caixas_por_embalagem} caixas desta dimensão. Para {quantidade_caixas} caixa(s), precisamos de {num_embalagens_necessarias} caixa(s) de papelão ondulado") 
         
         col1, col2 = st.columns([3, 1])
         with col1:
-            st.markdown(f"Caixa papelão ondulado ({num_caixas_por_embalagem} caixas/embalagem)")
+            st.markdown(f"Caixa de papelão ondulado ({num_embalagens_necessarias} und)")
         with col2:
             st.markdown(f"R$ {custo_total_embalagem:.2f}")
     
@@ -402,7 +401,7 @@ def display_cost_breakdown(estrutura, tipo_tampa, largura, altura, profundidade,
         # Mostrar seção de custos de serigrafia no total do projeto
         st.markdown("---")
         st.markdown("**🎨 CUSTOS ADICIONAIS DE SERIGRAFIA (INCLUÍDOS NO TOTAL DO PROJETO)**")
-        st.info(f"❌ Custos aplicados uma vez ao total do projeto: Cola permanente R\$ {CUSTO_COLA_PERMANENTE}, Retardador vinílico R\$ {CUSTO_RETARDADOR_VINILICO}, Emulsão + sensibilizante R$ {CUSTO_EMULSAO_SENSIBILIZANTE} ...... COBRAR MEIO RECIPIENTE POR PROJETO")
+        st.info(f"❌ Cola permanente R\$ {CUSTO_COLA_PERMANENTE}")
         
         col1, col2 = st.columns([3, 1])
         with col1:
@@ -410,12 +409,14 @@ def display_cost_breakdown(estrutura, tipo_tampa, largura, altura, profundidade,
         with col2:
             st.markdown(f"R$ {CUSTO_COLA_PERMANENTE:.2f}")
         
+        st.info(f"❌ Retardador vinílico R\$ {CUSTO_RETARDADOR_VINILICO}")
         col1, col2 = st.columns([3, 1])
         with col1:
             st.markdown("Retardador vinílico")
         with col2:
             st.markdown(f"R$ {CUSTO_RETARDADOR_VINILICO:.2f}")
         
+        st.info(f"❌ Emulsão + sensibilizante R$ {CUSTO_EMULSAO_SENSIBILIZANTE}")
         col1, col2 = st.columns([3, 1])
         with col1:
             st.markdown("Emulsão + sensibilizante")

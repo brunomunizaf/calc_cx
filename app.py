@@ -268,12 +268,11 @@ with st.expander("💰 Detalhamento de custos por unidade", expanded=True):
     custo_emulsao = 0
     custo_cola_permanente = 0
 
-    # Total de custos variáveis (sem embalagem)
+    # Total de custos variáveis (sem embalagem e sem custos de serigrafia adicionais)
     total_custos_variaveis = (
         custo_papelao + custo_acrilico + custo_serigrafia + custo_impressao + 
         custo_revestimento + custo_cola_pva + custo_cola_adesiva + custo_cola_quente + custo_cola_isopor + 
-        custo_cola_acrilico + custo_fita + custo_rebites + custo_ima_chapa + 
-        custo_retardador + custo_emulsao + custo_cola_permanente
+        custo_cola_acrilico + custo_fita + custo_rebites + custo_ima_chapa
     )
 
     # Aplicar multiplicador de complexidade
